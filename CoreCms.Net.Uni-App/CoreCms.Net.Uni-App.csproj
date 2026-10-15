@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,6 +11,10 @@
     <EmbeddedResource Remove="CoreShop\unpackage\**" />
     <None Remove="CoreShop\.hbuilderx\**" />
     <None Remove="CoreShop\unpackage\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.4.1-pre1" />
   </ItemGroup>
 
 </Project>
