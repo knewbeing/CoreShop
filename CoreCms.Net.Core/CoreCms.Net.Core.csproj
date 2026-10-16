@@ -27,7 +27,7 @@
     <PackageReference Include="Qc.YilianyunSdk" Version="1.0.7" />
     <PackageReference Include="SqlSugar.IOC" Version="2.0.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-    <PackageReference Include="sqlSugarCore" Version="5.1.4.207" />
+    <PackageReference Include="SqlSugarCore" Version="5.1.4.221" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="9.0.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
