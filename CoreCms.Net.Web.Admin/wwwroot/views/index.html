@@ -325,7 +325,9 @@
             }
 
             function ordersEcharts() {
-                var myChart = echarts.init(document.getElementById('main'));
+                var chartElement = document.getElementById('main');
+                if (!chartElement) return;
+                var myChart = echarts.init(chartElement);
                 coreHelper.Post("Api/Tools/GetOrdersStatistics",
                     {}, function (data) {
                         if (data.code == 0) {
@@ -338,7 +340,9 @@
             }
 
             function usersEcharts() {
-                var myChart = echarts.init(document.getElementById('users'));
+                var chartElement = document.getElementById('users');
+                if (!chartElement) return;
+                var myChart = echarts.init(chartElement);
                 var option = {
                     tooltip: {
                         show: true

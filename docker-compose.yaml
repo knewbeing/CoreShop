@@ -1,48 +1,90 @@
-version: '3'
 services:
   frontservice:
     container_name: front-backend
     build:
-      context: ./front/publish
-      dockerfile: Dockerfile
+      context: ./obj/docker-publish/admin
+      dockerfile: ../../../CoreCms.Net.Web.Admin/Dockerfile
     ports:
-      - 8088:80
+      - '127.0.0.1:8088:80'
+    environment: &app-environment
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DbType: MySql
+      ConnectionStrings__SqlConnection: 'Server=mysql;Port=3306;Database=coreshop;Uid=CoreShop;Pwd=CoreShop;CharSet=utf8mb4;pooling=true;SslMode=None;Allow User Variables=true;Convert Zero Datetime=True;Allow Zero Datetime=True;'
+      RedisConfig__ConnectionString: 'redis:6379,connectTimeout=3000,connectRetry=1,syncTimeout=10000,DefaultDatabase=10'
+      AppConfig__AppUrl: 'http://localhost:8088/'
+      AppConfig__AppInterFaceUrl: 'http://localhost:8089/'
+      Cors__IPs: 'http://localhost:8088,http://127.0.0.1:8088'
+      JwtConfig__SecretKey: 'CoreShop-Local-Container-Test-Key-Only'
+      JwtConfig__Issuer: 'CoreShop.LocalTest'
+      SnowflakeId__WorkerId: '1'
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     labels:
-        description: 'front backend web'
+      description: 'front backend web'
     restart: always
-    
+
   webapiservice:
     container_name: web-api
     build:
-      context: ./api/publish
-      dockerfile: Dockerfile
+      context: ./obj/docker-publish/api
+      dockerfile: ../../../CoreCms.Net.Web.WebApi/Dockerfile
     ports:
-      - 8089:80
+      - '127.0.0.1:8089:80'
+    environment:
+      <<: *app-environment
+      SnowflakeId__WorkerId: '2'
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     labels:
       description: 'web api'
     restart: always
-  
+
   redis:
-     image: redis:latest
-     restart: always
-     ports: 
-        - 6379:6379
-     expose: 
-        - 6379
-     command:
-       redis-server 
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:6379:6379'
+    volumes:
+      - redis-test-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   mysql:
-     image: mysql:5.7.19
-     restart: always
-     ports: 
-        - 3306:3306
-     expose: 
-        - 3306  
-     volumes: 
-        - /usr/local/mysql/data:/var/lib/mysql
-        - /usr/local/mysql/conf.d:/etc/mysql/conf.d
-     command: mysqld   --character-set-server=utf8mb4  --collation-server=utf8mb4_unicode_ci --lower_case_table_names=2
-     environment: 
-        - MYSQL_ROOT_PASSWORD=admin
-                
+    image: mysql:5.7.19
+    platform: linux/amd64
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:3306:3306'
+    volumes:
+      - mysql-test-data:/var/lib/mysql
+      - './数据库/MySql/20211025/coreshopmysql20211025带演示数据（Navicat导出）.sql:/docker-entrypoint-initdb.d/01-coreshop.sql:ro'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --lower_case_table_names=1
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: coreshop
+      MYSQL_USER: CoreShop
+      MYSQL_PASSWORD: CoreShop
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          "MYSQL_PWD=$$MYSQL_PASSWORD mysql --protocol=TCP -h 127.0.0.1 -u$$MYSQL_USER $$MYSQL_DATABASE -e 'SELECT 1' >/dev/null 2>&1 && test -f /var/lib/mysql/ib_buffer_pool",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+      start_period: 30s
+
+volumes:
+  mysql-test-data:
+  redis-test-data:

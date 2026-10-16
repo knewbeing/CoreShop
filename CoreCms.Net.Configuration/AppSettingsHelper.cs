@@ -37,7 +37,7 @@ namespace CoreCms.Net.Configuration
                 });
             }
 
-            Configuration = configBuilder.Build();
+            Configuration = configBuilder.AddEnvironmentVariables().Build();
         }
 
         /// <summary>
