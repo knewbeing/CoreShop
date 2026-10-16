@@ -933,14 +933,20 @@ namespace CoreCms.Net.Services
                             //商品名称可能较长,设置为多行文本输出
                             SixLabors.Fonts.Font titleFont = new SixLabors.Fonts.Font(fontFamily, 20, SixLabors.Fonts.FontStyle.Regular);
                             //开始绘制商品名称
-                            imageTemple.Mutate(ctx => ctx.DrawText(goodModel.name, titleFont, SixLabors.ImageSharp.Color.Red, new SixLabors.ImageSharp.PointF(10, 450)));
+                            imageTemple.Mutate(ctx => ctx.Paint(canvas => canvas.DrawText(
+                                new RichTextOptions(titleFont) { Origin = new SixLabors.ImageSharp.PointF(10, 450) },
+                                goodModel.name, Brushes.Solid(SixLabors.ImageSharp.Color.Red), null)));
                             //绘制商品金额
                             SixLabors.Fonts.Font moneyFont = new SixLabors.Fonts.Font(fontFamily, 18);
                             //获取该文件绘制所需的大小
-                            imageTemple.Mutate(ctx => ctx.DrawText("￥" + goodModel.price, moneyFont, SixLabors.ImageSharp.Color.Crimson, new SixLabors.ImageSharp.PointF(10, 410)));
+                            imageTemple.Mutate(ctx => ctx.Paint(canvas => canvas.DrawText(
+                                new RichTextOptions(moneyFont) { Origin = new SixLabors.ImageSharp.PointF(10, 410) },
+                                "￥" + goodModel.price, Brushes.Solid(SixLabors.ImageSharp.Color.Crimson), null)));
                             //绘制提示语
                             SixLabors.Fonts.Font tipsFont = new SixLabors.Fonts.Font(fontFamily, 10);
-                            imageTemple.Mutate(ctx => ctx.DrawText("扫描或长按识别二维码", tipsFont, SixLabors.ImageSharp.Color.Black, new SixLabors.ImageSharp.PointF(283, 555)));
+                            imageTemple.Mutate(ctx => ctx.Paint(canvas => canvas.DrawText(
+                                new RichTextOptions(tipsFont) { Origin = new SixLabors.ImageSharp.PointF(283, 555) },
+                                "扫描或长按识别二维码", Brushes.Solid(SixLabors.ImageSharp.Color.Black), null)));
                             //载入流存储在到文件
                             await imageTemple.SaveAsync(_webHostEnvironment.WebRootPath + fileName);
 

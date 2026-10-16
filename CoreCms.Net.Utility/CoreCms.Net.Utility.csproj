@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="NPOI" Version="2.7.5" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="4.1.2" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="11.0.0-rc.2.26504.105" />
     <PackageReference Include="ToolGood.Words" Version="3.1.0.2" />
   </ItemGroup>
