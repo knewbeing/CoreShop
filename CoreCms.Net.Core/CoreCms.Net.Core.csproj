@@ -29,7 +29,6 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     <PackageReference Include="SqlSugarCore" Version="5.1.4.221" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="9.0.1" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
 
   <ItemGroup>
